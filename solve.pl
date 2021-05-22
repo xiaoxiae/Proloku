@@ -1,6 +1,6 @@
 ?- use_module(library(clpfd)).
 
-% ------------------------------ PARSING ------------------------------
+% ------------------------------ PARSING ------------------------------ %
 % reads all lines of input
 read_lines([H|T]) :- read_line_to_codes(user_input, H), H \= end_of_file, read_lines(T).
 read_lines([]).
@@ -26,7 +26,7 @@ toNums([A|B], [C|D]) :- toNumsHelper(A, C), toNums(B, D), !.
 toNums([], []).
 
 
-% ------------------------------ PRINTING ------------------------------
+% ------------------------------ PRINTING ------------------------------ %
 printRow([A|X]) :- write(A), printRow(X).
 printRow([]) :- nl.
 
@@ -34,7 +34,7 @@ printSolutions(I, [A|X]) :- write("Grid "), write(I), nl, maplist(printRow, A), 
 printSolutions(_, []).
 
 
-% ------------------------------ SOLVING ------------------------------
+% ------------------------------ SOLVING ------------------------------ %
 % checking for values in 3x3 squares
 squares([A, B, C | L1], [D, E, F | L2], [G, H, I | L3]) :- all_distinct([A, B, C, D, E, F, G, H, I]), squares(L1, L2, L3).
 squares([], [], []).

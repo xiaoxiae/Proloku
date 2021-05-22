@@ -8,4 +8,8 @@ To build the solver, use
 swipl -o solve -g main -c solve.pl
 ```
 
-After this, pipe your sudokus (in the same format as `sudoku.txt`) to the executable and it will output them solved.
+After this, pipe your sudokus (in the same format as `sudoku.txt`) to the executable and it will output them solved:
+
+```
+cat sudoku.txt | ./solve
+```

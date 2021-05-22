@@ -31,6 +31,7 @@ printRow([A|X]) :- write(A), printRow(X).
 printRow([]) :- nl.
 
 printSolutions(I, [A|X]) :- write("Grid "), write(I), nl, maplist(printRow, A), J #= I + 1, printSolutions(J, X).
+printSolutions(_, []).
 
 
 % ------------------------------ SOLVING ------------------------------

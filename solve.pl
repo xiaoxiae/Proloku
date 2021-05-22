@@ -14,11 +14,11 @@ ifZeroThenBlank(0, _).
 ifZeroThenBlank(X, X).
 
 % [48,48,51,48,50,48,54,48,48] -> [_,_,5,_,1,_,3,_,_]
-charcodeRowToNumbers([A|B], [C|D]) :- char_code(E, A), atom_number(E, F), ifZeroThenBlank(F, C), charcodeRowToNumbers(B, D).
-charcodeRowToNumbers([], []).
+rowToNumbers([A|B], [C|D]) :- char_code(E, A), atom_number(E, F), ifZeroThenBlank(F, C), rowToNumbers(B, D).
+rowToNumbers([], []).
 
 % list of ^
-toNumsHelper([A|B], [C|D]) :- charcodeRowToNumbers(A, C), toNumsHelper(B, D).
+toNumsHelper([A|B], [C|D]) :- rowToNumbers(A, C), toNumsHelper(B, D).
 toNumsHelper([], []).
 
 % list of lists of ^
@@ -34,18 +34,21 @@ printSolutions(I, [A|X]) :- write("Grid "), write(I), nl, maplist(printRow, A), 
 printSolutions(_, []).
 
 
-% ------------------------------ SOLVING ------------------------------ %
+% ------------------------------ UTILITIES ------------------------------ %
 % checking for values in 3x3 squares
 squares([A, B, C | L1], [D, E, F | L2], [G, H, I | L3]) :- all_distinct([A, B, C, D, E, F, G, H, I]), squares(L1, L2, L3).
 squares([], [], []).
 
+valid([R1, R2, R3, R4, R5, R6, R7, R8, R9]) :-
+            A = [R1, R2, R3, R4, R5, R6, R7, R8, R9],
+            maplist(all_distinct, A), transpose(A, B), maplist(all_distinct, B), % rows and columns are distinct
+            squares(R1, R2, R3), squares(R4, R5, R6), squares(R7, R8, R9).       % also constrain squares
+
+
+% ------------------------------ SOLVING ------------------------------ %
 % solve a sudoku
-solve([R1, R2, R3, R4, R5, R6, R7, R8, R9]) :-
-                 A = [R1, R2, R3, R4, R5, R6, R7, R8, R9],                            % we'll work with the whole thing
-                 append(A, All), All ins 1..9,                                        % digits are 1 though 9
-                 maplist(all_distinct, A), transpose(A, B), maplist(all_distinct, B), % rows and columns are distinct
-                 squares(R1, R2, R3), squares(R4, R5, R6), squares(R7, R8, R9),       % also constrain squares
-                 labeling([], All).                                                   % sadly, we have to label for some of the sudokus
+solve(A) :- append(A, All), All ins 1..9,  % digits are 1 though 9
+            valid(A), labeling([], All).   % force them to be valid and label them
 
 % solve all sudokus
 solveAll([A | X]) :- solve(A), solveAll(X).
